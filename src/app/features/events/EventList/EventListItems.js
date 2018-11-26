@@ -4,18 +4,18 @@ import EventListAttendee from './EventListAttendee';
 
 class EventListItems extends Component {
     render() {
-     
+     const {event,onEventEdit}=this.props;
         return (
                   <div>
                      <Segment.Group style={{margin:"1.5em 0"}}>
                         <Segment>
                           <Item.Group>
                             <Item>
-                              <Item.Image size="tiny" circular src={this.props.events.hostPhotoURL} />
+                              <Item.Image size="tiny" circular src={event.hostPhotoURL} />
                               <Item.Content>
-                                <Item.Header as="a">{this.props.events.title}</Item.Header>
+                                <Item.Header as="a">{event.title}</Item.Header>
                                 <Item.Description>
-                                  Hosted by <a href='google.com' alt='alt '>{this.props.events.hostedBy}</a>
+                                  Hosted by <a href='google.com' alt='alt '>{event.hostedBy}</a>
                                 </Item.Description>
                               </Item.Content>
                             </Item>
@@ -23,20 +23,20 @@ class EventListItems extends Component {
                         </Segment>
                         <Segment>
                           <span>
-                            <Icon name="clock" /> {this.props.events.date} |
-                            <Icon name="marker" />  {this.props.events.venue}
+                            <Icon name="clock" /> {event.date} |
+                            <Icon name="marker" />  {event.venue}
                           </span>
                         </Segment>
                         <Segment secondary>
                         <List horizontal>
-                        {this.props.events.attendees && this.props.events.attendees.map((attendee)=>(
+                        {event.attendees && event.attendees.map((attendee)=>(
                           <EventListAttendee attendee={attendee} key={attendee.id} />
                         ))}
                            </List>
                         </Segment>
                         <Segment clearing>
-                        <span>{this.props.events.description}</span>
-                          <Button as="a" color="teal" floated="right" content="View" />
+                        <span>{event.description}</span>
+                          <Button as="a" onClick={onEventEdit(event)} color="teal" floated="right" content="View" />
                         </Segment>
                       </Segment.Group>
          </div>
