@@ -5,7 +5,7 @@ const emptyEvent={
           title:'',
           date:'',
           city:'',
-          vanue:'',
+          venue:'',
           hostedBy:''
 }
 class EventForm extends Component {
@@ -18,7 +18,8 @@ class EventForm extends Component {
         this.setState({event:this.props.selectedEvent})
       } 
     }
-    componentWillReceiveProps(nextProps){
+    
+    UNSAFE_componentWillReceiveProps(nextProps){
       console.log('current',this.props.selectedEvent);
       console.log('next',nextProps.selectedEvent);
       if(nextProps.selectedEvent !== this.props.selectedEvent){
@@ -29,8 +30,7 @@ class EventForm extends Component {
     }
     onFormSubmit=(event)=>{
         event.preventDefault();
-        this.props.createEvent(this.state.event);
-        
+        this.state.event.id ? this.props.updateEvent(this.state.event):this.props.createEvent(this.state.event);
     }
     onInputChange=(event)=>{
         const newEvent={...this.state.event}
@@ -57,7 +57,7 @@ class EventForm extends Component {
                      </Form.Field>
                      <Form.Field>
                        <label>Venue</label>
-                       <input name='vanue' value={this.state.event.venue} onChange={this.onInputChange} placeholder="Enter the Venue of the event" />
+                       <input name='venue' value={this.state.event.venue} onChange={this.onInputChange} placeholder="Enter the Venue of the event" />
                      </Form.Field>
                      <Form.Field>
                        <label>Hosted By</label>
