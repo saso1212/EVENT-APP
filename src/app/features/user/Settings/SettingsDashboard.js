@@ -18,7 +18,6 @@ const SettingsDashboard = () => {
                 <Route path='/settings/photos' component={PhotosPage}/>
                 <Route path='/settings/account' component={AccountPage}/>
             </Switch>
-
             </Grid.Column>
             <Grid.Column  width={4}>
             <SettingsNav/>
