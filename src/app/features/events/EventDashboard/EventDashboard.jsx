@@ -5,11 +5,11 @@ import {Grid,GridColumn,Button} from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
 import EventForm from '../EventForm/EventForm';
 import user from '../../../../assets/images/user.png'
+import {createEvent,updateEvent,deleteEvent} from '../eventActions'
 
 
 class EventDashboard extends Component {
   state={
-    events:this.props.events,
     isOpen:false,
     selectedEvent:null
   }
@@ -40,9 +40,8 @@ class EventDashboard extends Component {
       selectedEvent:null
     })
   }
-  handleDleteEvent=(eventId)=>()=>{
-    const updatedEvent=this.state.events.filter(e=>e.id !== eventId);
-    this.setState({events:updatedEvent})
+  handleDeleteEvent=(eventId)=>()=>{
+    this.props.deleteEvent(eventId)
   }
   handleCreateEvent=(newEvent)=>{
     newEvent.id=cuid();
@@ -55,12 +54,12 @@ class EventDashboard extends Component {
   }
     render() {
       const {selectedEvent}=this.state;
-   //   const {event} =this.props;
+     const {events} =this.props;
         return (
           <Grid>
               <GridColumn width={10}>
               <h1>Event List</h1>
-              <EventList deleteEvent={this.handleDleteEvent} events={this.state.events} onEventEdit={this.handleEditEvent}/>
+              <EventList deleteEvent={this.handleDeleteEvent} events={events} onEventEdit={this.handleEditEvent}/>
               </GridColumn>
               <GridColumn width={6}>
               <Button positive onClick={this.handleFormOpen} content='Create Event' />
@@ -71,13 +70,18 @@ class EventDashboard extends Component {
     }
 }
 
-const mapStateToProp=(state)=>{
+const mapStateToProps=(state)=>{
   return {
     events:state.events
   }
 }
+const mapDispatchToProps={
+    createEvent,
+    updateEvent,
+    deleteEvent
+}
 
-export default connect(mapStateToProp)(EventDashboard);
+export default connect(mapStateToProps,mapDispatchToProps)(EventDashboard);
 
 
 

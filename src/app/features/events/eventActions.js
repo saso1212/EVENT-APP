@@ -13,14 +13,14 @@ export const updateEvent=(event)=>{
     return{
       type:actionTypes.UPDATE_EVENT,
       payload:{
-          event
+        event
       }
     }
  }
 
 export const deleteEvent=(eventId)=>{
     return{
-      type:actionTypes.UPDATE_EVENT,
+      type:actionTypes.DELETE_EVENT,
       payload:{
           eventId
       }
