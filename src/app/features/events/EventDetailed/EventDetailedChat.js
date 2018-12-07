@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Segment,Header,Comment,Form,Button} from 'semantic-ui-react';
 
-class EventDetailedChat extends Component {
-    render() {
+const EventDetailedChat =({attendees})=> {
         return (
               <div>
                 <Segment
@@ -91,7 +90,6 @@ class EventDetailedChat extends Component {
                 </Segment>
               </div>
         );
-    }
 }
 
 export default EventDetailedChat;

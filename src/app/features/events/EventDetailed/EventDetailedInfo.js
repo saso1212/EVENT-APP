@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Grid,Segment,Button,Icon} from 'semantic-ui-react';
 
-class EventDetailedInfo extends Component {
-    render() {
+const EventDetailedInfo =({event})=> {
+    
         return (
                <Segment.Group>
                   <Segment attached="top">
@@ -11,7 +11,7 @@ class EventDetailedInfo extends Component {
                         <Icon size="large" color="teal" name="info" />
                       </Grid.Column>
                       <Grid.Column width={15}>
-                        <p>Description of Event</p>
+                        <p>{event.description}</p>
                       </Grid.Column>
                     </Grid>
                   </Segment>
@@ -21,7 +21,7 @@ class EventDetailedInfo extends Component {
                         <Icon name="calendar" size="large" color="teal" />
                       </Grid.Column>
                       <Grid.Column width={15}>
-                        <span>Event Date</span>
+                        <span>{event.date}</span>
                       </Grid.Column>
                     </Grid>
                   </Segment>
@@ -31,7 +31,7 @@ class EventDetailedInfo extends Component {
                         <Icon name="marker" size="large" color="teal" />
                       </Grid.Column>
                       <Grid.Column width={11}>
-                        <span>Event Venue</span>
+                        <span>{event.venue}</span>
                       </Grid.Column>
                       <Grid.Column width={4}>
                         <Button color="teal" size="tiny" content="Show Map" />
@@ -40,7 +40,6 @@ class EventDetailedInfo extends Component {
                   </Segment>
                 </Segment.Group>
         );
-    }
 }
 
 export default EventDetailedInfo;

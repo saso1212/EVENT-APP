@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Segment,Image,Header,Button,Item} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
 
 const eventImageStyle = {
     filter: 'brightness(60%)'
@@ -14,12 +15,12 @@ const eventImageTextStyle = {
     color: 'white'
 };
 
-class EventDetailedHeader extends Component {
-    render() {
+const EventDetailedHeader=({event})=> {
+    
         return (
              <Segment.Group>
                 <Segment basic attached="top" style={{ padding: '0' }}>
-                  <Image src="/assets/categoryImages/drinks.jpg" fluid style={eventImageStyle} />
+                  <Image src={`/assets/categoryImages/${event.category}.jpg`} fluid style={eventImageStyle} />
           
                   <Segment basic style={eventImageTextStyle}>
                     <Item.Group>
@@ -27,12 +28,12 @@ class EventDetailedHeader extends Component {
                         <Item.Content>
                           <Header
                             size="huge"
-                            content="Event Title"
+                            content={event.title}
                             style={{ color: 'white' }}
                           />
-                          <p>Event Date</p>
+                          <p>{event.date}</p>
                           <p>
-                            Hosted by <strong>Hosted by</strong>
+                            Hosted by <strong>{event.hostedBy}</strong>
                           </p>
                         </Item.Content>
                       </Item>
@@ -44,13 +45,12 @@ class EventDetailedHeader extends Component {
                   <Button>Cancel My Place</Button>
                   <Button color="teal">JOIN THIS EVENT</Button>
           
-                  <Button color="orange" floated="right">
+                  <Button as={Link} to={`/menage/${event.id}`} color="orange" floated="right">
                     Manage Event
                   </Button>
                 </Segment>
               </Segment.Group>
         );
-    }
 }
 
 export default EventDetailedHeader;
