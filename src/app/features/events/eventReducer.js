@@ -54,7 +54,7 @@ const initialState=
       ];
 
       export const createEvent=(state,payload)=>{
-            return [...state,Object.assign({},payload.event)]
+            return [...state,{...payload.event}]
       }
      
       export  const deleteEvent=(state,payload)=>{
