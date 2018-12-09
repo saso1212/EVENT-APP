@@ -1,9 +1,11 @@
-import testReducer from './testReducer';
+
 import {combineReducers} from 'redux';
+import { reducer as FormReducer } from 'redux-form';
 import eventReducer from '../features/events/eventReducer';
+// import testReducer from './testReducer';
 
 const rootReducer=combineReducers({
-    test:testReducer,
+    form:FormReducer,
     events:eventReducer
 });
 

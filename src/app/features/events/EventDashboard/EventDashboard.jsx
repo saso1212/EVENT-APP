@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-
 import {connect} from 'react-redux';
 import {Grid,GridColumn} from 'semantic-ui-react';
 import EventList from '../EventList/EventList';
-
 import {deleteEvent} from '../eventActions'
 
 
