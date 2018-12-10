@@ -117,6 +117,8 @@ const validate = combineValidators({
   //will put default validation message
   venue: isRequired('venue'),
   date: isRequired('date')
-})
+});
+
+// AIzaSyB3SNo2WrB-RrvqrtYpCOyeGJhwx35hU-E
 
 export default connect(mapStateToProp,mapDispatchToProps)(reduxForm({form: 'eventForm',enableReinitialize:true,validate})(EventForm));
