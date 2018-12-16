@@ -54,6 +54,7 @@ class EventForm extends Component {
    
     onFormSubmit=values=>{
       values.date = moment(values.date).format();
+      values.venueLatLng=this.state.venueLatLng;
       console.log(values);
       console.log('initial values',this.props.initialValues.id);
        if (this.props.initialValues.id)
@@ -138,7 +139,8 @@ class EventForm extends Component {
                     dateFormat='YYYY-MM-DD HH:mm'
                     timeFormat='HH:mm'
                     showTimeSelect
-                    placeholder="Date and time of event"/>
+                    placeholder="Date and time of event"
+                    />
                     <Button disabled={invalid || pristine || submitting} positive type="submit">
                       Submit
                      </Button>

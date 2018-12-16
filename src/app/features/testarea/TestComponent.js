@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
+import {Icon} from 'semantic-ui-react'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 import Script from 'react-load-script';
+import GoogleMapReact from 'google-map-react';
 
+
+
+const Marker=()=><Icon name='marker' size='big' color='red'/>
 class TestComponent extends Component {
     state = { 
         address:"",
-        scriptLoaded:false }
+        scriptLoaded:false 
+    }
+    static defaultProps = {
+        center: {
+          lat: 59.95,
+          lng: 30.33
+        },
+        zoom: 11
+      };
 
      onChange = (address) => this.setState({ address });
 
@@ -37,7 +50,21 @@ class TestComponent extends Component {
                 {this.state.scriptLoaded && <PlacesAutocomplete inputProps={inputProps} />}
                     <button type="submit">Submit</button>
                 </form>
+                <div style={{ height: '300px', width: '100%' }}>
+                    <GoogleMapReact
+                    bootstrapURLKeys={{ key:'AIzaSyB3SNo2WrB-RrvqrtYpCOyeGJhwx35hU-E' }}
+                    defaultCenter={this.props.center}
+                    defaultZoom={this.props.zoom}
+                    >
+                    <Marker
+                        lat={59.955413}
+                        lng={30.337844}
+                        text={'Kreyser Avrora'}
+                    />
+                    </GoogleMapReact>
+                </div>
             </div>
+            
         );
     }
 }
