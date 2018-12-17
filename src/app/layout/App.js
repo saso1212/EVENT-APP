@@ -10,12 +10,14 @@ import SettingsDashboard from '../features/user/Settings/SettingsDashboard';
 import NavBar from '../features/Nav/Navbar/Navbar';
 import {Container} from 'semantic-ui-react';
 import TestComponent from '../features/testarea/TestComponent';
+import ModalMenager from '../features/modals/ModalMenager';
 import './App.css';
 
 class App extends Component {
   render() {
     return (
      <div> 
+       <ModalMenager/>
        <Switch> 
          <Route exact path='/' component={HomePage}/> 
        </Switch>
