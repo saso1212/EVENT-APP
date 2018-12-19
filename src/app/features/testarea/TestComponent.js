@@ -4,7 +4,7 @@ import {Icon,Button} from 'semantic-ui-react'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 import Script from 'react-load-script';
 import GoogleMapReact from 'google-map-react';
-import {modalOpen}  from '../modals/modalActions';
+import {openModal}  from '../modals/modalActions';
 
 
 
@@ -34,7 +34,7 @@ class TestComponent extends Component {
           .catch(error => console.error('Error', error))
       }
     render() {
-        const {data,modalOpen}=this.props;
+        const {data,openModal}=this.props;
         const inputProps = {
             value: this.state.address,
             onChange: this.onChange,
@@ -51,7 +51,7 @@ class TestComponent extends Component {
                 {this.state.scriptLoaded && <PlacesAutocomplete inputProps={inputProps} />}
                     <button type="submit">Submit</button>
                     <br/>
-                    <Button onClick={()=>modalOpen('TestModal',{data:45})} color='teal' content="Modal Open" />
+                    <Button onClick={()=>openModal('TestModal',{data:45})} color='teal' content="Modal Open" />
                 </form>
                 <div style={{ height: '300px', width: '100%' }}>
                     <GoogleMapReact
@@ -77,7 +77,7 @@ const mapStateToProp=(state)=>({
     data:state.test.data
 })
 const mapDispatchToProps={
-    modalOpen
+    openModal
 }
    
 export default connect(mapStateToProp,mapDispatchToProps)(TestComponent);
