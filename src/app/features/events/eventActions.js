@@ -1,4 +1,7 @@
 import * as actionTypes from './eventConstatnts';
+import {asyncActionStart,asyncActionFinish,asyncActionError} from '../async/asyncActions';
+import {fatchSampleData} from '../../data/mockAPI';
+
 
 export const createEvent=(event)=>{
    return{
@@ -25,4 +28,26 @@ export const deleteEvent=(eventId)=>{
           eventId
       }
     }
+ }
+
+ export const fatchEvents=(events)=>{
+   return {
+     type:actionTypes.FATCH_EVENTS,
+     payload:events
+      }
+ }
+
+ export const loadEvents=()=>{
+   return async dispatch=>{
+     try {
+      dispatch(asyncActionStart())
+      let events= await fatchSampleData();
+      dispatch(fatchEvents(events));
+      dispatch(asyncActionFinish())
+     }
+     catch (error){
+       console.log(error);
+       dispatch(asyncActionError());
+     }
+   }
  }

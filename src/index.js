@@ -8,8 +8,10 @@ import App from './app/layout/App';
 import * as serviceWorker from './serviceWorker';
 import {configureStore} from './app/store/configureStore';
 import ScrollToTop from './app/common/utility/scrollToTop';
+import {loadEvents} from './app/features/events/eventActions'
 
 const store=configureStore();
+store.dispatch(loadEvents());
 
 const rootEl=document.getElementById('root');
 
@@ -23,8 +25,7 @@ let render=()=>{
             </ScrollToTop> 
            </BrowserRouter>
          </Provider>
-     
-        ,rootEl)
+           ,rootEl)
 }
 
 if (module.hot){
