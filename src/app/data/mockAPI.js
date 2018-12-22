@@ -16,3 +16,4 @@ const delay=(ms)=>{
 export const fatchSampleData=()=>{
     return delay(1000)
 }
+
