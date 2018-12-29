@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {Grid,GridColumn} from 'semantic-ui-react';
+// binding alaow as to conect to firebase and is hireorder component
+import {firestoreConnect} from 'react-redux-firebase';
 import EventList from '../EventList/EventList';
 import {deleteEvent} from '../eventActions'
 import LoadingComponent from '../../../layout/LoadingComponent';
@@ -30,15 +32,17 @@ class EventDashboard extends Component {
 
 const mapStateToProps=(state)=>{
   return {
-    events:state.events,
+    events:state.firestore.ordered.events,
     loading:state.async.loading
   }
 }
 const mapDispatchToProps={
     deleteEvent
 }
-
-export default connect(mapStateToProps,mapDispatchToProps)(EventDashboard);
+// with this hire-order component we are lisaianing firebase not get date but lisening
+export default connect(mapStateToProps,mapDispatchToProps)(
+  firestoreConnect([{collection:'events'}])(EventDashboard)
+  );
 
 
 
