@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {Menu,Container,Button} from 'semantic-ui-react';
 import {NavLink,Link,withRouter} from 'react-router-dom';
+import {withFirebase} from 'react-redux-firebase'
 import {connect} from 'react-redux';
 import {openModal} from '../../modals/modalActions';
-import {logout} from '../../auth/authActions';
 
 import SingedOutMeny from '../Menus/SingedOutMeny';
 import SingedInMeny from '../Menus/SingedInMeny';
+
 class Navbar extends Component {
   
   handleSignIn=()=>{
@@ -17,12 +18,13 @@ class Navbar extends Component {
     this.props.openModal('RegisterModal')
   }
   handleSignOut=()=>{
-    this.props.logout()
+    //this is function that we have using withFirabase
+    this.props.firebase.logout()
     this.props.history.push('/');
   }
     render() {
       const {auth}=this.props;
-      const authenticated=auth.authenticated;
+      const authenticated=auth.isLoaded && !auth.isEmpty;
         return (
             <div>
                       <Menu inverted fixed="top">
@@ -38,7 +40,7 @@ class Navbar extends Component {
                             <Button  as={Link} to='/createEvent' floated="right" positive inverted content="Create Event" />
                           </Menu.Item>}
                           {authenticated ? (
-                          <SingedInMeny currentUser={auth.currentUser}  signOut={this.handleSignOut}/>
+                          <SingedInMeny auth={auth}  signOut={this.handleSignOut}/>
                           ) :  (
                           <SingedOutMeny signIn={this.handleSignIn} register={this.handleRegister}/>
                           )}
@@ -50,12 +52,13 @@ class Navbar extends Component {
 }
 const mapStateToProps=(state)=>{
   return{
-    auth:state.auth
+    auth:state.firebase.auth
   }
 }
 
 const mapDispatchToProps={
-  openModal,
-  logout
+  openModal
 }
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Navbar));
+
+//setup to use firebase functionality
+export default withRouter(withFirebase(connect(mapStateToProps,mapDispatchToProps)(Navbar)));
