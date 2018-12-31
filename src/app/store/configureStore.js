@@ -6,10 +6,13 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import {reactReduxFirebase,getFirebase} from 'react-redux-firebase';
 import {reduxFirestore,getFirestore} from 'redux-firestore';
 //this so we can use somethig more than dispatch and getSata in thunk
+//users is the databse colection in firebase cloud, useFirestoreForProfile set the profile in firebase
+//from firestore
 const rrfConfig={
-    userProfile:'user',
-    attachAuthIsRedu:true,
-    useFirestoreForProfile:true
+    userProfile:'users',
+    attachAuthIsReady:true,
+    useFirestoreForProfile:true,
+    updateProfileOnLogin:false
 }
 export const configureStore=(preloadedState)=>{
     const middlewares=[thunk.withExtraArgument({getFirebase,getFirestore})];

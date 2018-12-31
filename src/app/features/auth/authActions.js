@@ -32,10 +32,12 @@ export const registerUser = (user) =>
       // create the user in firebase auth
       let createdUser = await firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
       console.log(createdUser);
+      
       // update the auth profile
       await createdUser.updateProfile({
         displayName: user.displayName
       })
+      
       // create a new profile in firestore
       let newUser = {
         displayName: user.displayName,
@@ -48,6 +50,31 @@ export const registerUser = (user) =>
       throw new SubmissionError({
         _error: error.message
       })
+    }
+  }
+
+  export const socialLogin=(selectedProvider)=>{
+   return async (dispatch, getState, {getFirebase,getFirestore}) => {
+      const firebase=getFirebase();
+      const firestore=getFirestore();
+      try{
+        dispatch(closeModal())
+       let user = await firebase.login({
+          provider:selectedProvider,
+          type:'popup'
+        })
+        console.log(user);
+        if(user.additionalUserInfo.isNewUser){
+          await firestore.set(`users/${user.user.uid}`,{
+            displayName:user.profile.displayName,
+            photoURL:user.profile.avatarUrl,
+            createdAt:firestore.FieldValue.serverTimestamp()
+          })
+        }  
+      }
+      catch(error){
+        console.log(error)
+      }
     }
   }
 
