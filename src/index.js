@@ -40,5 +40,9 @@ if (module.hot){
         setTimeout(render)
     })
 }
-render();
+//our render method will commit after autentication is been done and this si done by seting  firebas and firestore
+store.firebaseAuthIsReady.then(()=>{
+    render();
+})
+
 serviceWorker.unregister();

@@ -1,5 +1,6 @@
-import {SubmissionError} from 'redux-form'
+import {SubmissionError,reset} from 'redux-form'
 import {closeModal} from '../modals/modalActions'
+import {toastr} from 'react-redux-toastr'
 // if I want inteleses with firebase I mast use this
 //  import firebase from  'firebase'
 //  firebase.updateProfile({})
@@ -52,7 +53,7 @@ export const registerUser = (user) =>
       })
     }
   }
-
+  
   export const socialLogin=(selectedProvider)=>{
    return async (dispatch, getState, {getFirebase,getFirestore}) => {
       const firebase=getFirebase();
@@ -78,3 +79,28 @@ export const registerUser = (user) =>
     }
   }
 
+  export const updatePassword=(creds)=>{
+    return async (dispatch,getState,{getFirebase}) =>{
+      const firebase=getFirebase();
+      const user=firebase.auth().currentUser;
+
+      try{
+        console.log(user)
+        await user.updatePassword(creds.newPassword1)
+        //reset new redux-form method that reset all files in the  form 
+        //account is the name of the form
+        await dispatch(reset('account'))
+        toastr.success('Success', 'Your password has been succesufuly updated ')
+
+      }
+      catch(error){
+        console.log(error)
+        //  SummithigError with this method we throw error in our submit form so we can used
+      throw new SubmissionError({
+        _error: error.message
+      })
+      }
+
+
+    }
+  }

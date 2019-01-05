@@ -70,3 +70,5 @@ export const deleteEvent=(eventId)=>{
      }
    }
  }
+
+ 

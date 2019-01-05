@@ -1,13 +1,15 @@
 import React from 'react';
 import {Grid} from 'semantic-ui-react';
 import {Switch,Route,Redirect} from 'react-router-dom';
+import {connect} from 'react-redux'
+import {updatePassword} from '../../auth/authActions'
 import SettingsNav from './SettingsNav';
 import BasicPage from './BasicPage';
 import PhotosPage from './PhotosPage';
 import AccountPage from './AccountPage';
 import AbouthPage from './AbouthPage';
 
-const SettingsDashboard = () => {
+const SettingsDashboard = ({updatePassword,providerId}) => {
     return (
         <Grid>
             <Grid.Column  width={12}>
@@ -16,7 +18,8 @@ const SettingsDashboard = () => {
                 <Route path='/settings/basic' component={BasicPage}/>
                 <Route path='/settings/abouth' component={AbouthPage}/>
                 <Route path='/settings/photos' component={PhotosPage}/>
-                <Route path='/settings/account' component={AccountPage}/>
+                <Route path='/settings/account' 
+                render={()=><AccountPage updatePassword={updatePassword} providerId={providerId}/>}/>
             </Switch>
             </Grid.Column>
             <Grid.Column  width={4}>
@@ -25,5 +28,18 @@ const SettingsDashboard = () => {
         </Grid>
     );
 };
+const mapStateToProps=(state)=>{
+    return{
+        // because firt the component is lloaded and after the database is loaded we cahack
+        //providerId:state.firebase.auth.isLoaded && state.firebase.auth.providerData[0].providerId
+        //but there is another way bu seting up in index.js render to be done after autentication 
+        // buy use rrfConfig( attachAuthIsReady:true)
+        providerId: state.firebase.auth.providerData[0].providerId
+    }
+    
+}
 
-export default SettingsDashboard;
+const mapDispatchToProps={
+    updatePassword
+}
+export default connect(mapStateToProps,mapDispatchToProps)(SettingsDashboard);

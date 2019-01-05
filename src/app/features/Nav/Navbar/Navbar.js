@@ -23,7 +23,7 @@ class Navbar extends Component {
     this.props.history.push('/');
   }
     render() {
-      const {auth}=this.props;
+      const {auth,profile}=this.props;
       const authenticated=auth.isLoaded && !auth.isEmpty;
         return (
             <div>
@@ -40,7 +40,7 @@ class Navbar extends Component {
                             <Button  as={Link} to='/createEvent' floated="right" positive inverted content="Create Event" />
                           </Menu.Item>}
                           {authenticated ? (
-                          <SingedInMeny auth={auth}  signOut={this.handleSignOut}/>
+                          <SingedInMeny profile={profile}  signOut={this.handleSignOut}/>
                           ) :  (
                           <SingedOutMeny signIn={this.handleSignIn} register={this.handleRegister}/>
                           )}
@@ -52,7 +52,8 @@ class Navbar extends Component {
 }
 const mapStateToProps=(state)=>{
   return{
-    auth:state.firebase.auth
+    auth:state.firebase.auth,
+    profile:state.firebase.profile
   }
 }
 
