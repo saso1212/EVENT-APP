@@ -41,6 +41,7 @@ const mapDispatchToProps={
 }
 // with this hire-order component we are lisaianing firebase not get date but lisening
 export default connect(mapStateToProps,mapDispatchToProps)(
+  //firestoreConnect metod we are lissening to the event
   firestoreConnect([{collection:'events'}])(EventDashboard)
   );
 

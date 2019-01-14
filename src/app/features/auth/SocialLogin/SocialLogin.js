@@ -1,5 +1,8 @@
 import React from 'react'
 import {Button,Icon} from 'semantic-ui-react'
+import {socialLogin} from '../authActions'
+import {connect} from 'react-redux'
+
 
 
 const SocialLogin = ({socialLogin}) => {
@@ -16,5 +19,7 @@ const SocialLogin = ({socialLogin}) => {
        </div>
   )
 }
-
-export default SocialLogin
+const mapDispatchToProps={
+  socialLogin
+}
+export default connect(null,mapDispatchToProps)(SocialLogin)
