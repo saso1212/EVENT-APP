@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Dropzone from 'react-dropzone'
 import {connect} from 'react-redux'
-
+// import user from '../../../../assets/images/user.png';
 import {toastr} from 'react-redux-toastr'
 import {compose} from 'redux'
 import {firestoreConnect} from 'react-redux-firebase'
-import {uploadProfileImage} from '../userActions'
+import {uploadProfileImage,deletePhoto,setMainPhoto} from '../userActions'
 import {Image, Segment, Header, Divider, Grid, Button, Card,Icon} from 'semantic-ui-react';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
@@ -18,6 +18,7 @@ class PhotosPage extends Component {
         fieleName:'',
         cropResault:null,
         image:{}
+      
     }
     cropImages=()=>{
         console.log('CANVAS ',this.refs.cropper.getCroppedCanvas())
@@ -58,8 +59,28 @@ class PhotosPage extends Component {
             toastr.error('Error',error.message);           
         }
     }   
+
+    handlePhotoDelete=  (photo)=>async ()=>{
+        try{
+            this.props.deletePhoto(photo);
+            toastr.success('Succes','Photo has been deleted');
+        }
+        catch(error){
+            console.log(error);
+            toastr.error('Error',error.message);   
+        }
+    }
+    handleSetMainPhoto= (photo)=> async()=>{
+        try{
+             this.props.setMainPhoto(photo)
+            toastr.success('Succes','Main Photo has been updated');
+        }catch(error){
+            toastr.error('Error',error.message);   
+        }
+    }
+
     render() {
-        const {profile,photos}=this.props;
+        const {profile,photos,loading}=this.props;
         let filteredPhotos;
         if (photos){
             filteredPhotos= photos.filter(photo=>photo.url !== profile.photoURL)
@@ -104,8 +125,8 @@ class PhotosPage extends Component {
                         <div>
                         <Image style={{minHeight:'200px',minWidth:'200px' }} src={this.state.cropResault}/>
                       <Button.Group>
-                          <Button onClick={this.uploadImages} positive style={{width:'100px'}} icon='check'/>
-                          <Button onClick={this.cancleCrop} style={{width:'100px'}} icon='close'/>
+                          <Button onClick={this.uploadImages} positive style={{width:'100px'}} loading={loading} icon='check'/>
+                          <Button disabled={loading} onClick={this.cancleCrop} style={{width:'100px'}} icon='close'/>
                       </Button.Group>
                         </div>}
                     </Grid.Column>           
@@ -115,15 +136,15 @@ class PhotosPage extends Component {
 
                 <Card.Group itemsPerRow={5}>
                     <Card>
-                         <Image src={profile.photoURL} />
+                          <Image src={profile.photoURL || '/assets/user.png'} />
                         <Button positive>Main Photo</Button>
-                    </Card>
+                        </Card>
                     {photos && filteredPhotos.map(photo=>(
                        <Card key={photo.id}>
                        <Image src={photo.url} />
                        <div className='ui two buttons'>
-                           <Button basic color='green'>Main</Button>
-                           <Button basic icon='trash' color='red' />
+                           <Button basic color='green' loading={loading} onClick={this.handleSetMainPhoto(photo)}>Main</Button>
+                           <Button basic icon='trash' color='red' disabled={loading} onClick={this.handlePhotoDelete(photo)} />
                        </div>
                    </Card>))}
                 </Card.Group>
@@ -133,13 +154,16 @@ class PhotosPage extends Component {
 }
 
 const mapDispatchToProp={
-    uploadProfileImage
+    uploadProfileImage,
+    deletePhoto,
+    setMainPhoto
 }
 const mapStateToProp=(state)=>{
     return{
         auth:state.firebase.auth,
         profile:state.firebase.profile,
-        photos:state.firestore.ordered.photos
+        photos:state.firestore.ordered.photos,
+        loading:state.async.loading
     }
 }
 //auth is the props from mapstatetoprops

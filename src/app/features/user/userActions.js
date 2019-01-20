@@ -1,6 +1,7 @@
 import moment from 'moment'
 import {toastr} from 'react-redux-toastr'
 import cuid from 'cuid'
+import {asyncActionStart,asyncActionFinish,asyncActionError} from '../async/asyncActions'
 
 //we use firebase so we dont need reducer and constsnt
 
@@ -16,6 +17,7 @@ export const updateProfile=(user)=>{
             //this will update firestore user profile-- litlle bit strange but thi is only in this scenarioo
             await firebase.updateProfile(updatedUser);
             toastr.success('Success','Profile Update')
+           
         }
         catch(error){
             console.log(error)
@@ -34,6 +36,7 @@ export const uploadProfileImage=(file,fileName)=>{
             name:imageName
         }
         try{
+            dispatch(asyncActionStart());
             //upload file to firebase storage
             //path is the pathe where wi will upoad file,file is the file that we upload,
             // null is beacuse we will use firestore not the real firebase database and handle thet file manualu,
@@ -53,7 +56,7 @@ export const uploadProfileImage=(file,fileName)=>{
                 })
                 await user.updateProfile({
                     photoURL:downloadURL
-                })
+                }) 
             }
             //add the photo to photo collection
             await firestore.add({
@@ -66,13 +69,55 @@ export const uploadProfileImage=(file,fileName)=>{
                 name:imageName,
                 url:downloadURL
             })
+            dispatch(asyncActionFinish())
 
         }catch(error){
+            dispatch(asyncActionError())
             console.log(error)
             throw new Error('Problem uploading photo')
         }
 
 
+    }
+}
+
+export const deletePhoto=(photo)=>{
+    //we will need to delete photo into firebaseColection and in to firestore
+    return async (dispatch,getState,{getFirebase,getFirestore})=>{
+        const firebase=getFirebase();
+        const firestore=getFirestore();
+        const user=firebase.auth().currentUser;
+        try{
+           await firebase.deleteFile(`${user.uid}/userImages/${photo.name}`);
+            await firestore.delete({
+                collection:'users',
+                doc:user.uid,
+                subcollections:[{collection:'photos',doc:photo.id}]
+            })
+        }
+        catch(error){
+            dispatch(asyncActionError());
+            console.log(error);
+            throw new Error('Problem with delete photo')
+        }
+    }
+}
+
+export const setMainPhoto=photo=>{
+    return async (dispatch,getState,{getFirebase})=>{
+        const firebase=getFirebase();
+        try{
+            dispatch(asyncActionStart());
+            await firebase.updateProfile({
+                photoURL:photo.url
+            })
+            dispatch(asyncActionFinish())
+        }
+        catch(error){
+            console.log(error);
+            dispatch(asyncActionError())
+            throw new Error('Propblem with set main photo')
+        }
     }
 }
 
