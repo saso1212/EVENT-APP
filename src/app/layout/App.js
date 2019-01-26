@@ -7,7 +7,6 @@ import UserDetailedPage from '../features/user/UserDetailed/UserDetailedPage';
 import EventDashboard from '../features/events/EventDashboard/EventDashboard';
 import EventForm from '../features/events/EventForm/EventForm';
 import SettingsDashboard from '../features/user/Settings/SettingsDashboard';
-import PersonDetailedPage from '../features/testarea/PersonDetailedPage';
 import NavBar from '../features/Nav/Navbar/Navbar';
 import {Container} from 'semantic-ui-react';
 import TestComponent from '../features/testarea/TestComponent';
@@ -35,7 +34,6 @@ class App extends Component {
           <Route path='/settings' component={SettingsDashboard}/>
           <Route path='/createEvent' component={EventForm}/>
           <Route path='/test' component={TestComponent}/>
-          <Route path='/userDetailed' component={PersonDetailedPage}/>
         </Switch>
        </Container>
         </div>

@@ -1,8 +1,9 @@
 import React from 'react'
 import {Grid,Segment,Image,Button,Header,Icon,Card,Menu,Container} from 'semantic-ui-react'
-import {NavLink,withRouter} from 'react-router-dom';
-import {firestoreConnect} from 'react-redux-firebase';
+import {NavLink,withRouter} from 'react-router-dom'
+import {firestoreConnect} from 'react-redux-firebase'
 import {connect} from 'react-redux'
+
 
 const PersonDetailedPage = ({history,users}) => {
   console.log(users)
@@ -13,7 +14,7 @@ const PersonDetailedPage = ({history,users}) => {
           <Segment>  
              <Grid>
                  <Grid.Column width={3}>
-                 {users && <Image verticalAlign='middle' circular size='small' src={users[3].photoURL ||'/assets/user.png'} />}
+                 {users && <Image verticalAlign='middle' circular size='small' src={users[0].photoURL ||'/assets/user.png'} />}
                  </Grid.Column>
                  <Grid.Column width={3}>
                    <div style={{marginTop:'30%'}}>
