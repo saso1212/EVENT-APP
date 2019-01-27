@@ -4,7 +4,6 @@ import {NavLink,Link,withRouter} from 'react-router-dom';
 import {withFirebase} from 'react-redux-firebase'
 import {connect} from 'react-redux';
 import {openModal} from '../../modals/modalActions';
-
 import SingedOutMeny from '../Menus/SingedOutMeny';
 import SingedInMeny from '../Menus/SingedInMeny';
 
