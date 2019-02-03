@@ -12,7 +12,7 @@ import SelectInput from '../../../common/form/SelectInput';
 import DateInput from '../../../common/form/DateInput';
 import PlaceInput from '../../../common/form/PlaceInput';
 import {connect} from 'react-redux';
-import moment from 'moment';
+import { withFirestore } from 'react-redux-firebase';
 // import cuid from 'cuid';
 
 
@@ -21,6 +21,20 @@ class EventForm extends Component {
     cityLatLng: {},
     venueLatLng: {},
     scriptLoaded: false
+  }
+
+  async componentDidMount(){
+
+    const {firestore, match}=this.props;
+    //this is like a get request 
+    //with this request in firestore.ordered we take the single event with match id
+    let event= await firestore.get(`events/${match.params.id}`);
+     if(event.exists){
+       this.setState({
+         //we must use data() function to take the data from event
+         venueLatLng:event.data().venueLatLng
+       })
+     }
   }
 
   handleScriptLoaded = () => this.setState({ scriptLoaded: true });
@@ -34,9 +48,10 @@ class EventForm extends Component {
         });
       })
       .then(() => {
-        this.props.change('city', selectedCity)
-      })
+        this.props.change('city', selectedCity);
+      });
   };
+
 
   handleVenueSelect = selectedVenue => {
     geocodeByAddress(selectedVenue)
@@ -53,8 +68,6 @@ class EventForm extends Component {
 
    
     onFormSubmit=values=>{
-      console.log(values);
-      values.date = moment(values.date).format();
       values.venueLatLng=this.state.venueLatLng;
       console.log(values);
       console.log('initial values',this.props.initialValues.id);
@@ -105,7 +118,7 @@ class EventForm extends Component {
                    component={TextArea}
                     placeholder='Tell as abouth your event'/>
                   <Header sub color='teal'  content='Event Location Detailes'/>
-                  <Field 
+                  <Field
                     name="city"
                     type="text"
                     component={PlaceInput}
@@ -148,12 +161,12 @@ class EventForm extends Component {
     }
 }
 
-const mapStateToProp=(state,ownProps)=>{
-  const eventId=ownProps.match.params.id;
+const mapStateToProp=(state)=>{
+ 
   let event={};
 
-  if(eventId && state.events.length>0){
-      event=state.events.filter(event=>event.id === eventId)[0]
+  if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
+    event = state.firestore.ordered.events[0];
   }
   return{
       initialValues:event
@@ -178,4 +191,4 @@ const validate = combineValidators({
 
 
 
-export default connect(mapStateToProp,mapDispatchToProps)(reduxForm({form: 'eventForm',enableReinitialize:true,validate})(EventForm));
+export default withFirestore (connect(mapStateToProp,mapDispatchToProps)(reduxForm({form: 'eventForm',enableReinitialize:true,validate})(EventForm)));
