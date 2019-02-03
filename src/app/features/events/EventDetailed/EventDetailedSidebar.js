@@ -1,42 +1,46 @@
 import React from 'react';
-import {Segment,List,Label,Item} from 'semantic-ui-react';
+import { Segment, List, Label, Item } from 'semantic-ui-react';
+import { Link } from 'react-router-dom'
 
-const EventDetailedSidebar = ({attendees}) => {
-  const isHosted=false;
-    return (
-         <div>
-            <Segment
-              textAlign="center"
-              style={{ border: 'none' }}
-              attached="top"
-              secondary
-              inverted
-              color="teal"
-            >
-              {attendees && attendees.length} {attendees.length===1 ? 'Person' : 'People'} Going
-            </Segment>
-            <Segment attached>
-              <List relaxed divided>
-                {attendees && attendees.map((ateende)=>
-                (<Item key={ateende.id} style={{ position: 'relative' ,display:'flex'}}>
-                  {isHosted && <Label
+const EventDetailedSidebar = ({ attendees }) => {
+  const isHost = false;
+  return (
+    <div>
+      <Segment
+        textAlign="center"
+        style={{ border: 'none' }}
+        attached="top"
+        secondary
+        inverted
+        color="teal"
+      >
+        {attendees && attendees.length} {attendees && attendees.length === 1 ? 'Person' : 'People'} Going
+      </Segment>
+      <Segment attached>
+        <List relaxed divided>
+          {attendees &&
+            attendees.map(attendee => (
+              <Item key={attendee.id} style={{ position: 'relative' }}>
+                {isHost &&
+                <Label
                   style={{ position: 'absolute' }}
                   color="orange"
                   ribbon="right"
-                >Hosted
-                </Label>}  
-                <Item.Image size="tiny" src={ateende.photoURL} circular  />
-                <Item.Content >
+                >
+                  Host
+                </Label>}
+                <Item.Image size="tiny" src={attendee.photoURL}/>
+                <Item.Content verticalAlign="middle">
                   <Item.Header as="h3">
-                   <a href>{ateende.name}</a>
+                    <Link to={`/profile/${attendee.id}`}>{attendee.displayName}</Link>
                   </Item.Header>
                 </Item.Content>
-              </Item>)
-                )}
-              </List>
-            </Segment>
-          </div>
-    );
+              </Item>
+            ))}
+        </List>
+      </Segment>
+    </div>
+  );
 };
 
 export default EventDetailedSidebar;

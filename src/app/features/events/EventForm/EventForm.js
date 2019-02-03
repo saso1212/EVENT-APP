@@ -13,7 +13,7 @@ import DateInput from '../../../common/form/DateInput';
 import PlaceInput from '../../../common/form/PlaceInput';
 import {connect} from 'react-redux';
 import moment from 'moment';
-import cuid from 'cuid';
+// import cuid from 'cuid';
 
 
 class EventForm extends Component {
@@ -53,6 +53,7 @@ class EventForm extends Component {
 
    
     onFormSubmit=values=>{
+      console.log(values);
       values.date = moment(values.date).format();
       values.venueLatLng=this.state.venueLatLng;
       console.log(values);
@@ -63,14 +64,7 @@ class EventForm extends Component {
        }
         else
         {
-          const newEvent={
-            ...values,
-            id:cuid(),
-            hostPhotoURL:'/assets/user.png',
-            hostedBy:'Bob',
-            attendees:[]
-          }
-          this.props.createEvent(newEvent)};
+          this.props.createEvent(values)};
           this.props.history.push('/events');
     }
    
