@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import format from 'date-fns/format';
-import {Segment,Item,Button,Icon,List} from 'semantic-ui-react'
+import {Segment,Item,Button,Icon,List, Label,} from 'semantic-ui-react'
 import EventListAttendee from './EventListAttendee';
 
 class EventListItems extends Component {
@@ -19,6 +19,7 @@ class EventListItems extends Component {
                                 <Item.Description>
                                   Hosted by <a href='google.com' alt='alt '>{event.hostedBy}</a>
                                 </Item.Description>
+                               {event.cancelled && <Label style={{top: '-40px'}} ribbon='right' color='red' content='This event has been cancelled'/>}
                               </Item.Content>
                             </Item>
                           </Item.Group>

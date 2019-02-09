@@ -11,6 +11,7 @@ import TextArea from '../../../common/form/TextArea';
 import SelectInput from '../../../common/form/SelectInput';
 import DateInput from '../../../common/form/DateInput';
 import PlaceInput from '../../../common/form/PlaceInput';
+import { cancelToggle} from '../eventActions'
 import {connect} from 'react-redux';
 import { withFirestore } from 'react-redux-firebase';
 // import cuid from 'cuid';
@@ -28,13 +29,25 @@ class EventForm extends Component {
     const {firestore, match}=this.props;
     //this is like a get request 
     //with this request in firestore.ordered we take the single event with match id
-    let event= await firestore.get(`events/${match.params.id}`);
-     if(event.exists){
-       this.setState({
-         //we must use data() function to take the data from event
-         venueLatLng:event.data().venueLatLng
-       })
-     }
+    //and we get only during componentDidMount
+    // let event= await firestore.get(`events/${match.params.id}`);
+    //  if(event.exists){
+    //    this.setState({
+    //      //we must use data() function to take the data from event
+    //      venueLatLng:event.data().venueLatLng
+    //    })
+    //  }
+    //with setListener we get the data on every changes
+   await firestore.setListener(`events/${match.params.id}`);
+
+  }
+
+  async componentWillUnmount(){
+    const {firestore, match}=this.props;
+    //beacuse in the firestore in the listener if we dont unlisten it will
+    //stay during opening  other pages
+    await firestore.unsetListener(`events/${match.params.id}`);
+
   }
 
   handleScriptLoaded = () => this.setState({ scriptLoaded: true });
@@ -72,8 +85,12 @@ class EventForm extends Component {
       console.log(values);
       console.log('initial values',this.props.initialValues.id);
        if (this.props.initialValues.id)
-        {this.props.updateEvent(values);
-        this.props.history.goBack();
+        { 
+          if (Object.keys(values.venueLatLng).length === 0) {
+          values.venueLatLng = this.props.event.venueLatLng
+        }
+          this.props.updateEvent(values);
+          this.props.history.goBack();
        }
         else
         {
@@ -92,7 +109,7 @@ class EventForm extends Component {
         {key: 'travel', text: 'Travel', value: 'travel'},
     ];
   
-    const {invalid, submitting, pristine} = this.props;
+    const {invalid, submitting, pristine,event,cancelToggle} = this.props;
     //pristine is true after anything changes 
         return (
           <Grid>
@@ -153,6 +170,13 @@ class EventForm extends Component {
                      </Button>
                     <Button type="button" 
                     onClick={()=>this.props.history.push('/events')}>Cancel</Button>
+                     <Button
+                      onClick={() => cancelToggle(!event.cancelled, event.id)}
+                      type='button'
+                      color={event.cancelled ? 'green' : 'red'}
+                      floated='right'
+                      content={event.cancelled ? 'Reactivate Event' : 'Cancel Event'}
+                       />
               </Form>
             </Segment>
           </Grid.Column>
@@ -169,12 +193,15 @@ const mapStateToProp=(state)=>{
     event = state.firestore.ordered.events[0];
   }
   return{
-      initialValues:event
+      initialValues:event,
+      event:event 
+      //just  event
   }
 }
 const mapDispatchToProps={
   createEvent,
-  updateEvent
+  updateEvent,
+  cancelToggle
 }
 const validate = combineValidators({
   title: isRequired({message: 'The event title is required'}),

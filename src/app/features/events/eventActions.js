@@ -49,6 +49,26 @@ export const updateEvent = event => {
   };
 };
 
+//cancelled will be true or false
+export const cancelToggle = (cancelled, eventId) =>
+ async (dispatch,getState,{ getFirestore }) => {
+  const firestore = getFirestore();
+  //if true?  :  
+  const message = cancelled
+    ? 'Are you sure you want to cancel the event?'
+    : 'This reactivate the event - are you sure?';
+  try {
+    toastr.confirm(message, {
+      onOk: () =>
+        firestore.update(`events/${eventId}`, {
+          //if there is no cancalled it will cretaed   in firesbase 
+          cancelled: cancelled
+        })
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const deleteEvent=(eventId)=>{
     return{
