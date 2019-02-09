@@ -1,49 +1,43 @@
-import React from 'react'
-import {NavLink} from 'react-router-dom'
-import {Grid,Header,Menu,Card,Image,Segment} from 'semantic-ui-react'
+import React from 'react';
+import { Card, Grid, Header, Image, Menu, Segment } from 'semantic-ui-react';
 
-function UserDetailedEvents({auth}) {
+const UserDeteiledEvents = () => {
   return (
     <Grid.Column width={12}>
-    <Segment attached>
-        <Header icon='calendar' content='Events'/>
+      <Segment attached>
+        <Header icon="calendar" content="Events" />
         <Menu secondary pointing>
-            <Menu.Item as={NavLink} to={`/profile/${auth.uid}`} name='All Events' />
-            <Menu.Item  as={NavLink} to={'/settings'} name='Past Events'/>
-            <Menu.Item name='Future Events'/>
-            <Menu.Item name='Events Hosted'/>
+          <Menu.Item name="All Events" active />
+          <Menu.Item name="Past Events" />
+          <Menu.Item name="Future Events" />
+          <Menu.Item name="Events Hosted" />
         </Menu>
 
         <Card.Group itemsPerRow={5}>
+          <Card>
+            <Image src={'/assets/categoryImages/drinks.jpg'} />
+            <Card.Content>
+              <Card.Header textAlign="center">Event Title</Card.Header>
+              <Card.Meta textAlign="center">
+                28th March 2018 at 10:00 PM
+              </Card.Meta>
+            </Card.Content>
+          </Card>
 
-            <Card>
-                <Image src={'/assets/categoryImages/drinks.jpg'}/>
-                <Card.Content>
-                    <Card.Header textAlign='center'>
-                        Event Title
-                    </Card.Header>
-                    <Card.Meta textAlign='center'>
-                        28th March 2018 at 10:00 PM
-                    </Card.Meta>
-                </Card.Content>
-            </Card>
-
-            <Card>
-                <Image src={'/assets/categoryImages/drinks.jpg'}/>
-                <Card.Content>
-                    <Card.Header textAlign='center'>
-                        Event Title
-                    </Card.Header>
-                    <Card.Meta textAlign='center'>
-                        28th March 2018 at 10:00 PM
-                    </Card.Meta>
-                </Card.Content>
-            </Card>
-
+          <Card>
+            <Image src={'/assets/categoryImages/drinks.jpg'} />
+            <Card.Content>
+              <Card.Header textAlign="center">Event Title</Card.Header>
+              <Card.Meta textAlign="center">
+                28th March 2018 at 10:00 PM
+              </Card.Meta>
+            </Card.Content>
+          </Card>
         </Card.Group>
-    </Segment>
-</Grid.Column>
-  )
-}
+      </Segment>
+    </Grid.Column>
+  );
+};
 
-export default UserDetailedEvents
+export default UserDeteiledEvents;
+

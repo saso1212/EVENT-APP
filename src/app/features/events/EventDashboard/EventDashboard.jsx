@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {Grid,GridColumn} from 'semantic-ui-react';
 // binding alaow as to conect to firebase and is hireorder component
-import {firestoreConnect} from 'react-redux-firebase';
+import {firestoreConnect,isLoaded,isEmpty} from 'react-redux-firebase';
 import EventList from '../EventList/EventList';
 import {deleteEvent} from '../eventActions'
 import LoadingComponent from '../../../layout/LoadingComponent';
@@ -15,10 +15,10 @@ class EventDashboard extends Component {
     this.props.deleteEvent(eventId)
   }
     render() {
-     const {events,loading} =this.props;
+     const {events} =this.props;
         return ( 
           <Grid>
-             {loading && <LoadingComponent inverted={true}/>}
+             {(!isLoaded(events) || isEmpty(events)) && <LoadingComponent inverted={true}/>}
               <GridColumn width={10}  >
               <EventList deleteEvent={this.handleDeleteEvent} events={events} />
               </GridColumn>
@@ -33,7 +33,7 @@ class EventDashboard extends Component {
 const mapStateToProps=(state)=>{
   return {
     events:state.firestore.ordered.events,
-    loading:state.async.loading
+   // loading:state.async.loading
   }
 }
 const mapDispatchToProps={

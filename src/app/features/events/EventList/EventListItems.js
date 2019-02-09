@@ -3,10 +3,11 @@ import {Link} from 'react-router-dom';
 import format from 'date-fns/format';
 import {Segment,Item,Button,Icon,List, Label,} from 'semantic-ui-react'
 import EventListAttendee from './EventListAttendee';
+import { objectToArray} from '../../../common/utility/helpers'
 
 class EventListItems extends Component {
     render() {
-     const {event,deleteEvent}=this.props;
+     const {event}=this.props;
         return (
                   <div>
                      <Segment.Group style={{margin:"1.5em 0"}}>
@@ -15,9 +16,9 @@ class EventListItems extends Component {
                             <Item>
                               <Item.Image size="tiny" circular src={event.hostPhotoURL} />
                               <Item.Content>
-                                <Item.Header as="a">{event.title}</Item.Header>
+                                <Item.Header as={Link} to={`/event/${event.id}`}>{event.title}</Item.Header>
                                 <Item.Description>
-                                  Hosted by <a href='google.com' alt='alt '>{event.hostedBy}</a>
+                                  Hosted by <Link to={`/propfile/${event.hostedUid}`}>{event.hostedBy}</Link>
                                 </Item.Description>
                                {event.cancelled && <Label style={{top: '-40px'}} ribbon='right' color='red' content='This event has been cancelled'/>}
                               </Item.Content>
@@ -33,15 +34,14 @@ class EventListItems extends Component {
                         <Segment secondary>
                         <List horizontal>
                         {event.attendees && 
-                        Object.values(event.attendees).map((attendee,index)=>(
-                          <EventListAttendee attendee={attendee} key={index} />
+                        objectToArray(event.attendees).map((attendee)=>(
+                          <EventListAttendee attendee={attendee} key={attendee.id} />
                         ))}
                            </List>
                         </Segment>
                         <Segment clearing>
                         <span>{event.description}</span>
                           <Button as={Link} to={`/event/${event.id}`}  color="teal" floated="right" content="View" />
-                          <Button as="a" onClick={deleteEvent(event.id)} color="red" floated="right" content="Delete" />
                         </Segment>
                       </Segment.Group>
          </div>
