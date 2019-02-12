@@ -4,6 +4,7 @@ import {fatchSampleData} from '../../data/mockAPI';
 import {toastr} from 'react-redux-toastr'
 import moment from 'moment'
 import { createNewEvent } from '../../common/utility/helpers'
+import firebase from '../../config/firebase';
 
 
 export const createEvent = event => {
@@ -102,5 +103,56 @@ export const deleteEvent=(eventId)=>{
      }
    }
  }
+//fatch events with firebase functions
+ export const getEventsForDashboard = lastEvent => async (dispatch, getState) => {
+  let today = new Date(Date.now());
+  const firestore = firebase.firestore();
+  const eventsRef = firestore.collection('events');
+  console.log(eventsRef);
+  try {
+    dispatch(asyncActionStart());
+    //for paging this is that document that we want to start up
+    //we must check if we have laast event
+    let startAfter =
+      lastEvent &&
+      (await firestore
+        .collection('events')
+        .doc(lastEvent.id)
+        .get());
+        console.log('start after',startAfter);
+    let query;
 
- 
+    lastEvent
+      ? (query = eventsRef
+          .where('date', '>=', today)
+          .orderBy('date')
+          .startAfter(startAfter)
+          .limit(3))
+      : (query = eventsRef
+          .where('date', '>=', today)
+          .orderBy('date')
+          .limit(3));
+    
+    let querySnap = await query.get();
+    console.log('querySnap',querySnap);
+
+    if (querySnap.docs.length === 0) {
+      dispatch(asyncActionFinish());
+      return querySnap;
+    }
+
+    let events = [];
+
+    for (let i = 0; i < querySnap.docs.length; i++) {
+      let evt = { ...querySnap.docs[i].data(), id: querySnap.docs[i].id };
+      events.push(evt);
+    }
+    console.log(events);
+    dispatch({ type: actionTypes.FATCH_EVENTS, payload: { events } });
+    dispatch(asyncActionFinish());
+    return querySnap;
+  } catch (error) {
+    console.log(error);
+    dispatch(asyncActionError());
+  }
+};

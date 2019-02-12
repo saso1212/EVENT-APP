@@ -18,7 +18,7 @@ class EventListItems extends Component {
                               <Item.Content>
                                 <Item.Header as={Link} to={`/event/${event.id}`}>{event.title}</Item.Header>
                                 <Item.Description>
-                                  Hosted by <Link to={`/propfile/${event.hostedUid}`}>{event.hostedBy}</Link>
+                                  Hosted by <Link to={`/profile/${event.hostUid}`}>{event.hostedBy}</Link>
                                 </Item.Description>
                                {event.cancelled && <Label style={{top: '-40px'}} ribbon='right' color='red' content='This event has been cancelled'/>}
                               </Item.Content>
