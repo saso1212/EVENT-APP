@@ -13,6 +13,7 @@ class EventList extends Component {
             <InfiniteScroll
               pageStart={0}
               loadMore={getNextEvents}
+              //chak that we are not in the loading status and if we have more event 
               hasMore={!loading && moreEvents}
               initialLoad={false}
             >
