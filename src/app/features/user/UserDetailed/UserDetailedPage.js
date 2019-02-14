@@ -44,6 +44,9 @@ class UserDetailedPage extends Component {
   }
 
   changeTab = (e, data) => {
+    console.log(data);
+    //in the data with clicking the tab we have activeIndex in the data activeIndex=1,.....
+    //so we can use in the get user event
     this.props.getUserEvents(this.props.userUid, data.activeIndex)
   }
 

@@ -209,6 +209,7 @@ export const cancelGoingToEvent = (event) =>
         events.push({...evt.data(), id: evt.id})
       }
       console.log('events',events)
+      //push in the event reducer that we creted
       dispatch({type: FATCH_EVENTS, payload: {events}})    
       dispatch(asyncActionFinish());
     } catch (error) {
