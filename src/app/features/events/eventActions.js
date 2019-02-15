@@ -112,7 +112,7 @@ export const deleteEvent=(eventId)=>{
   try {
     dispatch(asyncActionStart());
     //for paging this is that document that we want to start up
-    //we must check if we have laast event
+    //we must check if we have last event
     let startAfter =
       lastEvent &&
       (await firestore
@@ -156,3 +156,26 @@ export const deleteEvent=(eventId)=>{
     dispatch(asyncActionError());
   }
 };
+
+//Realtime database
+
+export const addEventComment = (eventId, values, parentId) => 
+  async (dispatch, getState, {getFirebase}) => {
+    const firebase = getFirebase();
+    const profile = getState().firebase.profile;
+    const user = firebase.auth().currentUser;
+    let newComment = {
+      parentId: parentId,
+      displayName: profile.displayName,
+      photoURL: profile.photoURL || '/assets/user.png',
+      uid: user.uid,
+      text: values.comment,
+      date: Date.now()
+    }
+    try {
+      await firebase.push(`event_chat/${eventId}`, newComment)
+    } catch (error) {
+      console.log(error);
+      toastr.error('Oops', 'Problem adding comment')
+    }
+  }
