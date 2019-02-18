@@ -14,7 +14,13 @@ import ModalMenager from '../features/modals/ModalMenager';
 import './App.css';
 
 class App extends Component {
+  timeApp=()=>{
+    setInterval(()=>{
+      console.log('Time start');
+    },600000);
+  }
   render() {
+    this.timeApp();
     return (
      <div> 
        <ModalMenager/>

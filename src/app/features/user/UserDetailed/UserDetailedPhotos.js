@@ -9,7 +9,7 @@ const UserDetailedPhotos = ({ photos }) => {
       <Segment attached>
         <Header icon="image" content="Photos" />
 
-        <Image.Group size="small">
+        <Image.Group size='small'>
           {photos &&
             photos.map(photo => (
               <LazyLoad

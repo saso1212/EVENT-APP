@@ -22,5 +22,5 @@ class EventDetailedChatForm extends Component {
     );
   }
 }
-
+///what this means
 export default reduxForm({ Fields: 'comment' })(EventDetailedChatForm);

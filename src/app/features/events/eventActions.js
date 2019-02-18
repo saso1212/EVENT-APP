@@ -119,7 +119,7 @@ export const deleteEvent=(eventId)=>{
         .collection('events')
         .doc(lastEvent.id)
         .get());
-        console.log('start after',startAfter);
+        
     let query;
 
     lastEvent
