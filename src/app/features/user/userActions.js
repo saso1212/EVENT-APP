@@ -136,11 +136,12 @@ export const goingToEvent = (event) =>
       displayName: user.displayName,
       host: false
     }
+    //create subcolection in firestore
     try {
       await firestore.update(`events/${event.id}`, {
         [`attendees.${user.uid}`]: attendee
       })
-      
+    //create new colection   11
       await firestore.set(`event_attendee/${event.id}_${user.uid}`, {
         eventId: event.id,
         userUid: user.uid,
@@ -217,3 +218,47 @@ export const cancelGoingToEvent = (event) =>
       dispatch(asyncActionError());
     }
   };
+
+  export const followUser=userToFollow=>
+  async (dispatch, getState, {getFirestore}) => {
+    const firestore = getFirestore();
+    const user = firestore.auth().currentUser;
+    const following = {
+      photoURL: userToFollow.photoURL || '/assets/user.png',
+      city: userToFollow.city || 'unknown city',
+      displayName: userToFollow.displayName
+    }
+    console.log('Folowing',following,userToFollow);
+    console.log('User UId',user.uid)
+    try{
+      await firestore.set(
+        {
+          collection: 'users',
+          doc: user.uid,
+          subcollections: [{collection: 'following', doc: userToFollow.id}]
+        },
+        following
+      );
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  export const unFollowUser=userToUnFollow=>
+  async (dispatch, getState, {getFirestore}) => {
+    const firestore = getFirestore();
+    const user = firestore.auth().currentUser;  
+    console.log(userToUnFollow)
+    try{
+      await firestore.delete(
+        {
+          collection: 'users',
+          doc: user.uid,
+          subcollections: [{collection: 'following',doc:userToUnFollow.id}]
+        }
+        
+      );
+    }catch(error){
+      console.log(error)
+    }
+  }

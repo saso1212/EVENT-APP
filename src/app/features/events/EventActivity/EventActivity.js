@@ -1,15 +1,24 @@
-import React from 'react';
-import {Header,Segment} from 'semantic-ui-react';
+import React from 'react'
+import { Header, Segment, Feed, Sticky } from 'semantic-ui-react'
+import EventActivityItem from './EventActivityItem'
+import './EventActivity.css'
 
-const EventActivity = () => {
-    return (
-        <div style={{margin:"1.5em 0"}}>
-            <Header attached="top" content='Recent Activity'/>
-            <Segment attached>
-            <p>Recent Activity</p>
-            </Segment>
-        </div>
-    );
-};
 
-export default EventActivity;
+const EventActivity = ({activities, contextRef}) => {
+  return (
+    <div className='EventActivity'>
+    <Sticky context={contextRef} offset={120}   >
+      <Header attached='top'  content='Recent Activity'/>
+      <Segment attached>
+        <Feed>
+          {activities && activities.map((activity) => (
+            <EventActivityItem   key={activity.id} activity={activity}/>
+          ))}
+        </Feed>
+      </Segment>
+    </Sticky>
+    </div>
+  )
+}
+
+export default EventActivity

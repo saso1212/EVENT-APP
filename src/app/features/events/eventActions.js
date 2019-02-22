@@ -6,7 +6,7 @@ import moment from 'moment'
 import { createNewEvent } from '../../common/utility/helpers'
 import firebase from '../../config/firebase';
 
-
+//create document in firestore
 export const createEvent = event => {
   return async (dispatch, getState, { getFirestore,getFirebase }) => {
     const firestore = getFirestore();

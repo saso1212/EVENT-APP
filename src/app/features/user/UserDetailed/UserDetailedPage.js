@@ -10,7 +10,7 @@ import UserDetailedSidebar from './UserDetailedSidebar'
 import UserDetailedEvents from './UserDetailedEvents'
 import { userDetailedQuery } from '../userQueries'
 import LoadingComponent from '../../../layout/LoadingComponent'
-import { getUserEvents } from '../userActions'
+import { getUserEvents,followUser,unFollowUser} from '../userActions'
 
 const mapStateToProps = (state, ownProps) => {
   let userUid = null;
@@ -29,11 +29,15 @@ const mapStateToProps = (state, ownProps) => {
     eventsLoading: state.async.loading,
     auth: state.firebase.auth,
     photos: state.firestore.ordered.photos,
-    requesting: state.firestore.status.requesting
+    requesting: state.firestore.status.requesting,
+    following: state.firestore.ordered.following
+    
   }
 }
 const mapDispatchToProps = {
-  getUserEvents
+  getUserEvents,
+  followUser,
+  unFollowUser
 }
 
 class UserDetailedPage extends Component {
@@ -51,16 +55,19 @@ class UserDetailedPage extends Component {
   }
 
   render() {
-    const {profile, photos, auth, match, requesting,events,eventsLoading} = this.props;
+    const {profile, photos, auth, match,unFollowUser, requesting,events,eventsLoading,followUser,following} = this.props;
     const isCurrentUser = auth.uid === match.params.id;
     const loading = Object.values(requesting).some(a => a === true);
+    //when I want to now is there is nothing in that collection I must use isEmpty
+    const isFollowing = !isEmpty(following)
+  //  console.log(isFollowing)
 
     if (loading) return <LoadingComponent inverted={true}/>
     return (
       <Grid>
         <UserDetailedHeader profile={profile}/>
         <UserDetailedDescription profile={profile}/>
-        <UserDetailedSidebar isCurrentUser={isCurrentUser}/>
+        <UserDetailedSidebar isCurrentUser={isCurrentUser} unFollowUser={unFollowUser} isFollowing={isFollowing} profile={profile} match={match} followUser={followUser}/>
         {photos && photos.length > 0 &&
         <UserDetailedPhotos photos={photos}/>}
         <UserDetailedEvents changeTab={this.changeTab} events={events} eventsLoading={eventsLoading}/>
@@ -72,5 +79,7 @@ class UserDetailedPage extends Component {
 export default compose(
   connect(mapStateToProps,mapDispatchToProps),
   //we take the data by the query
-  firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid)),
+  //match is state from routing
+  //take all documet that we need in query from firestore
+  firestoreConnect((auth, userUid,match) => userDetailedQuery(auth, userUid,match)),
 )(UserDetailedPage);

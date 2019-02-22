@@ -1,10 +1,11 @@
 import React from 'react';
 import {Menu,Image,Dropdown} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
+import './SingedInMeny.css'
 
 const SingedInMeny = ({signOut,profile,auth}) => {
     return (
-          <Menu.Item position="right">
+          <Menu.Item position="right" className='SingedInMeny'>
             <Image avatar spaced="right" src={profile.photoURL || '/assets/user.png'} />
             <Dropdown pointing="top left" text={profile.displayName}>
               <Dropdown.Menu>
