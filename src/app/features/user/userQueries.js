@@ -15,9 +15,9 @@ export const userDetailedQuery = ({ auth, userUid,match }) => {
         {
           collection: 'users',
           doc: auth.uid,
+          //this is check if there is foolowing users {collection: 'following', doc: match.params.id}
           subcollections: [{collection: 'following', doc: match.params.id}],
           storeAs: 'following'
-
         }
       ];
     } else {

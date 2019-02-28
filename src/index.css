@@ -30,9 +30,13 @@ body {
 .react-datepicker-wrapper {
   width: 100%;
 }
-
-
-/*home page styles*/
+.ui.top.attached.header{
+  z-index: -100 !important;
+}
+.menu transition visible{
+  z-index: 100 !important;
+}
+/*home page styles*/ 
 
 .masthead {
   background-image: linear-gradient(

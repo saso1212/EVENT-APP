@@ -80,7 +80,7 @@ class EventForm extends Component {
   };
 
    
-    onFormSubmit=values=>{
+    onFormSubmit= async values=>{
       values.venueLatLng=this.state.venueLatLng;
       console.log(values);
       console.log('initial values',this.props.initialValues.id);
@@ -89,7 +89,7 @@ class EventForm extends Component {
           if (Object.keys(values.venueLatLng).length === 0) {
           values.venueLatLng = this.props.event.venueLatLng
         }
-          this.props.updateEvent(values);
+         await this.props.updateEvent(values);
           this.props.history.goBack();
        }
         else
@@ -109,7 +109,7 @@ class EventForm extends Component {
         {key: 'travel', text: 'Travel', value: 'travel'},
     ];
   
-    const {invalid, submitting, pristine,event,cancelToggle} = this.props;
+    const {invalid, submitting, pristine,event,cancelToggle,loading} = this.props;
     //pristine is true after anything changes 
         return (
           <Grid>
@@ -165,10 +165,10 @@ class EventForm extends Component {
                     showTimeSelect
                     placeholder="Date and time of event"
                     />
-                    <Button disabled={invalid || pristine || submitting} positive type="submit">
+                    <Button loading={loading} disabled={invalid || pristine || submitting} positive type="submit">
                       Submit
                      </Button>
-                    <Button type="button" 
+                    <Button type="button" disabled={loading}
                     onClick={()=>this.props.history.push('/events')}>Cancel</Button>
                      <Button
                       onClick={() => cancelToggle(!event.cancelled, event.id)}
@@ -194,7 +194,8 @@ const mapStateToProp=(state)=>{
   }
   return{
       initialValues:event,
-      event:event 
+      event:event ,
+      loading:state.async.loading
       //just  event
   }
 }

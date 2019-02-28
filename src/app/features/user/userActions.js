@@ -106,54 +106,140 @@ export const deletePhoto=(photo)=>{
 }
 
 export const setMainPhoto=photo=>{
-    return async (dispatch,getState,{getFirebase})=>{
-        const firebase=getFirebase();
-        try{
-            dispatch(asyncActionStart());
-            await firebase.updateProfile({
-                photoURL:photo.url
+    return async (dispatch,getState)=>{
+    //    before duplicate data insert
+    //     const firebase=getFirebase();
+    //     try{
+    //         dispatch(asyncActionStart());
+    //         await firebase.updateProfile({
+    //             photoURL:photo.url
+    //         })
+    //         dispatch(asyncActionFinish())
+    //     }
+    //     catch(error){
+    //         console.log(error);
+    //         dispatch(asyncActionError())
+    //         throw new Error('Propblem with set main photo')
+    //     }
+     dispatch(asyncActionStart());
+     //go to firestore thrue the API
+      const firestore = firebase.firestore();
+      const user = firebase.auth().currentUser;
+      const today = new Date(Date.now());
+      let userDocRef = firestore.collection('users').doc(user.uid);
+      console.log('userDocRef',userDocRef)
+      //we need eventAttendeeRef to establish witch events the user is  attending
+      let eventAttendeeRef = firestore.collection('event_attendee');
+      console.log('eventAttendeeRef',eventAttendeeRef);
+      try {
+        let batch = firestore.batch();
+        await batch.update(userDocRef, {
+          photoURL: photo.url
+        });
+        //take only the futures events for update fot this user 
+        let eventQuery = await eventAttendeeRef.where('userUid', '==', user.uid).where('eventDate', '>', today);
+        console.log('eventQuery',eventQuery)
+        let eventQuerySnap = await eventQuery.get();
+        console.log('eventQuerySnap',eventQuerySnap)
+        for (let i=0; i<eventQuerySnap.docs.length; i++) {
+          //update data inside the event collection
+          //first take the document win event with eventId that we have inside event_attendee
+          let eventDocRef = await firestore.collection('events').doc(eventQuerySnap.docs[i].data().eventId)
+          let event = await eventDocRef.get();
+          console.log(event);
+          if (event.data().hostUid === user.uid) {
+            //if the user is Hositng
+            batch.update(eventDocRef, {
+              hostPhotoURL: photo.url,
+              [`attendees.${user.uid}.photoURL`]: photo.url
             })
-            dispatch(asyncActionFinish())
+          } else {
+            batch.update(eventDocRef, {
+              [`attendees.${user.uid}.photoURL`]: photo.url
+            })
+          }
         }
-        catch(error){
-            console.log(error);
-            dispatch(asyncActionError())
-            throw new Error('Propblem with set main photo')
+        console.log(batch);
+        await batch.commit();
+        dispatch(asyncActionFinish())
+      } catch (error) {
+        console.log(error);
+        dispatch(asyncActionError())
+        throw new Error('Problem setting main photo');
+      }
         }
-    }
 }
 
 
-export const goingToEvent = (event) => 
-  async (dispatch, getState, {getFirestore}) => {
-    const firestore = getFirestore();
-    const user = firestore.auth().currentUser;
-    const photoURL = getState().firebase.profile.photoURL;
-    const attendee = {
-      going: true,
-      joinDate: Date.now(),
-      photoURL: photoURL || '/assets/user.png',
-      displayName: user.displayName,
-      host: false
-    }
-    //create subcolection in firestore
-    try {
-      await firestore.update(`events/${event.id}`, {
+export const goingToEvent = (event) => async (dispatch, getState) => {
+  dispatch(asyncActionStart())
+  const firestore = firebase.firestore();
+  const user = firebase.auth().currentUser;
+  const photoURL = getState().firebase.profile.photoURL;
+  const attendee = {
+    going: true,
+    joinDate: Date.now(),
+    photoURL: photoURL || '/assets/user.png',
+    displayName: user.displayName,
+    host: false
+  };
+  try {
+    let eventDocRef = firestore.collection('events').doc(event.id);
+    let eventAttendeeDocRef = firestore.collection('event_attendee').doc(`${event.id}_${user.uid}`);
+    //firt it must finish the transation then you can set the other doc or there is no
+    // posebility to set the document 
+    await firestore.runTransaction(async (transaction) => {
+      //get the event document
+      await transaction.get(eventDocRef);
+      await transaction.update(eventDocRef, {
         [`attendees.${user.uid}`]: attendee
       })
-    //create new colection   11
-      await firestore.set(`event_attendee/${event.id}_${user.uid}`, {
+      await transaction.set(eventAttendeeDocRef, {
         eventId: event.id,
         userUid: user.uid,
         eventDate: event.date,
         host: false
       })
-      toastr.success('Success', 'You have signed up to the event');
-    } catch (error) {
-      console.log(error);
-      toastr.error('Oops', 'Problem signing up to event')
-    }
+    })
+    dispatch(asyncActionFinish())
+    toastr.success('Success', 'You have signed up to the event');
+  } catch (error) {
+    console.log(error);
+    dispatch(asyncActionError())
+    toastr.error('Oops', 'Problem signing up to event');
   }
+}
+//this is the code before  datat consistancy 
+
+  // async (dispatch, getState, {getFirestore}) => {
+  //   const firestore = getFirestore();
+  //   const user = firestore.auth().currentUser;
+  //   const photoURL = getState().firebase.profile.photoURL;
+  //   const attendee = {
+  //     going: true,
+  //     joinDate: Date.now(),
+  //     photoURL: photoURL || '/assets/user.png',
+  //     displayName: user.displayName,
+  //     host: false
+  //   }
+  //   //create subcolection in firestore
+  //   try {
+  //     await firestore.update(`events/${event.id}`, {
+  //       [`attendees.${user.uid}`]: attendee
+  //     })
+  //   //create new colection   11
+  //     await firestore.set(`event_attendee/${event.id}_${user.uid}`, {
+  //       eventId: event.id,
+  //       userUid: user.uid,
+  //       eventDate: event.date,
+  //       host: false
+  //     })
+  //     toastr.success('Success', 'You have signed up to the event');
+  //   } catch (error) {
+  //     console.log(error);
+  //     toastr.error('Oops', 'Problem signing up to event')
+  //   }
+  //}
 
 export const cancelGoingToEvent = (event) => 
   async (dispatch, getState, {getFirestore}) => {
@@ -228,8 +314,8 @@ export const cancelGoingToEvent = (event) =>
       city: userToFollow.city || 'unknown city',
       displayName: userToFollow.displayName
     }
-    console.log('Folowing',following,userToFollow);
-    console.log('User UId',user.uid)
+    // console.log('Folowing',following,userToFollow);
+    // console.log('User UId',user.uid)
     try{
       await firestore.set(
         {
@@ -243,7 +329,8 @@ export const cancelGoingToEvent = (event) =>
       console.log(error)
     }
   }
-
+  // delete user following in tehh firebase function we will delete the followes because we dont have propmision
+  //here
   export const unFollowUser=userToUnFollow=>
   async (dispatch, getState, {getFirestore}) => {
     const firestore = getFirestore();

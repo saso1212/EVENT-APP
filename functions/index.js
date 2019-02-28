@@ -96,3 +96,58 @@ exports.createActivity = functions.firestore.document('events/{eventId}').onCrea
 
 
     })
+
+    //beacuse we dont have premision to change in the other user profile 
+    //we must do with firebase functions
+
+    exports.userFollowing = functions.firestore
+    .document('users/{followerUid}/following/{followingUid}')
+    .onCreate((event, context) => {
+      console.log('v1');
+      console.log({context});
+      //we have acess in the followerUid and in the followingUid bu trigrt that event
+      const followerUid = context.params.followerUid;
+      const followingUid = context.params.followingUid;
+      //take the doc for follower from users 
+      const followerDoc = admin
+        .firestore()
+        .collection('users')
+        .doc(followerUid);
+  
+      console.log(followerDoc);
+      //get the currren user document
+      return followerDoc.get().then(doc => {
+        let userData = doc.data();
+        console.log({ userData });
+        let follower = {
+          displayName: userData.displayName,
+          photoURL: userData.photoURL || '/assets/user.png',
+          city: userData.city || 'unknown city'
+        };
+        return admin
+          .firestore()
+          .collection('users')
+          .doc(followingUid)
+          .collection('followers')
+          .doc(followerUid)
+          .set(follower);
+      });
+    });
+  
+  exports.unfollowUser = functions.firestore
+    .document('users/{followerUid}/following/{followingUid}')
+    .onDelete((event, context) => {
+      return admin
+        .firestore()
+        .collection('users')
+        .doc(context.params.followingUid)
+        .collection('followers')
+        .doc(context.params.followerUid)
+        .delete()
+        .then(() => {
+          return console.log('doc deleted');
+        })
+        .catch(err => {
+          return console.log(err);
+        });
+    });

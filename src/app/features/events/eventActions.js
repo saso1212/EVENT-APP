@@ -3,6 +3,7 @@ import {asyncActionStart,asyncActionFinish,asyncActionError} from '../async/asyn
 import {fatchSampleData} from '../../data/mockAPI';
 import {toastr} from 'react-redux-toastr'
 import moment from 'moment'
+import compareAsc from 'date-fns/compare_asc'
 import { createNewEvent } from '../../common/utility/helpers'
 import firebase from '../../config/firebase';
 
@@ -32,22 +33,59 @@ export const createEvent = event => {
 };
 
 export const updateEvent = event => {
-  return async (dispatch, getState, { getFirestore }) => {
-    const firestore = getFirestore();
-    //we must check if the date is diferent from the existing date because in the date componet it will hapend 
-    //some invalide data... we must do this
-    if (event.date !== getState().firestore.ordered.events[0].date) {
-      //we do moment function this because firestore will complain with the date
-      event.date = moment(event.date).toDate();
+  return async (dispatch, getState) => {
+    
+  //   const firestore = getFirestore();
+  //   //we must check if the date is diferent from the existing date because in the date componet it will hapend 
+  //   //some invalide data... we must do this
+  //   if (event.date !== getState().firestore.ordered.events[0].date) {
+  //     //we do moment function this because firestore will complain with the date
+  //     event.date = moment(event.date).toDate();
+  //   }
+  //   try {
+  //     await firestore.update(`events/${event.id}`, event);
+  //     toastr.success('Success', 'Event has been updated');
+  //   } catch (error) {
+  //     console.log(error);
+  //     toastr.error('Oops', 'Something went wrong');
+  //   }
+  dispatch(asyncActionStart());
+  const firestore = firebase.firestore();
+  //we need to compare the prewius date with the new one, if the data is chamnged then .....
+  if (event.date !== getState().firestore.ordered.events[0].date) {
+    event.date = moment(event.date).toDate();
+  }
+  try {
+    let eventDocRef = firestore.collection('events').doc(event.id);
+    // in the firebase compare of date is a little bit tricky so we must use date/fsn 
+    //we will compare the date in firebase before updtae and the date in our form
+    let dateEqual = compareAsc(getState().firestore.ordered.events[0].date.toDate(), event.date);
+    if (dateEqual !== 0) {
+      let batch = firestore.batch();
+      await batch.update(eventDocRef, event);
+
+      let eventAttendeeRef = firestore.collection('event_attendee');
+      let eventAttendeeQuery = await eventAttendeeRef.where('eventId', '==', event.id);
+      let eventAttendeeQuerySnap = await eventAttendeeQuery.get();
+
+      for (let i = 0; i < eventAttendeeQuerySnap.docs.length; i++) {
+        let eventAttendeeDocRef = await firestore.collection('event_attendee').doc(eventAttendeeQuerySnap.docs[i].id);
+        await batch.update(eventAttendeeDocRef, {
+          eventDate: event.date
+        })
+      }
+      await batch.commit();
+    } else {
+      await eventDocRef.update(event);
     }
-    try {
-      await firestore.update(`events/${event.id}`, event);
-      toastr.success('Success', 'Event has been updated');
-    } catch (error) {
-      console.log(error);
-      toastr.error('Oops', 'Something went wrong');
-    }
-  };
+    dispatch(asyncActionFinish());
+    toastr.success('Success', 'Event has been updated');
+  } catch (error) {
+    console.log(error);
+    dispatch(asyncActionError());
+    toastr.error('Oops', 'Something went wrong');
+  }
+   };
 };
 
 //cancelled will be true or false

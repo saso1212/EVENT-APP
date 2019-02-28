@@ -78,7 +78,7 @@ class EventDashboard extends Component {
           />
           </div>
           </Grid.Column>
-          <Grid.Column width={6}>
+          <Grid.Column width={6} style={{zIndex:'-100'}}>
           {/* contextRef is the ref in withc will be stycki  the element */}
             <EventActivity  activities={activities} contextRef={contextRef}/>
           </Grid.Column>

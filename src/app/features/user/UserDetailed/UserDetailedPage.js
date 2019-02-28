@@ -10,7 +10,8 @@ import UserDetailedSidebar from './UserDetailedSidebar'
 import UserDetailedEvents from './UserDetailedEvents'
 import { userDetailedQuery } from '../userQueries'
 import LoadingComponent from '../../../layout/LoadingComponent'
-import { getUserEvents,followUser,unFollowUser} from '../userActions'
+import { getUserEvents,unFollowUser,followUser} from '../userActions'
+
 
 const mapStateToProps = (state, ownProps) => {
   let userUid = null;
@@ -30,8 +31,8 @@ const mapStateToProps = (state, ownProps) => {
     auth: state.firebase.auth,
     photos: state.firestore.ordered.photos,
     requesting: state.firestore.status.requesting,
-    following: state.firestore.ordered.following
-    
+    following: state.firestore.ordered.following,
+   
   }
 }
 const mapDispatchToProps = {
