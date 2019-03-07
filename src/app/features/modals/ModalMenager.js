@@ -3,11 +3,13 @@ import {connect} from 'react-redux';
 import TestModal from './TestModal';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
+import UnauthModal from './UnauthModal'
 
 const modalLockup={
     TestModal,
     LoginModal,
-    RegisterModal
+    RegisterModal,
+    UnauthModal
 }
 
 const ModalMenager = ({currentModal}) => {

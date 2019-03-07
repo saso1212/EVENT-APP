@@ -21,12 +21,13 @@ class EventDashboard extends Component {
 
   async componentDidMount() {
     let next = await this.props.getEventsForDashboard();
-    console.log(next);
+    console.log('next: ',next);
 
-    if (next && next.docs && next.docs.length > 1) {
+    if (next && next.docs && next.docs.length >= 1) {
+      console.log('next again: ',next);
       this.setState({
         moreEvents: true,
-        loadingInitial: false,
+        loadingInitial: false
        
       });
     }
@@ -65,8 +66,8 @@ class EventDashboard extends Component {
       if (this.state.loadingInitial) return <LoadingComponent inverted={true} />;
   
       return (
-        <Grid>
-          <Grid.Column width={10}>
+        <Grid  >
+          <Grid.Column width={10} >
           {/* handle contetxt refi is nethod to witch Event activity will be placed 
           position fixed in some way */}
           <div ref={this.handleContextRef}>
@@ -78,7 +79,7 @@ class EventDashboard extends Component {
           />
           </div>
           </Grid.Column>
-          <Grid.Column width={6} style={{zIndex:'-100'}}>
+          <Grid.Column width={6}  >
           {/* contextRef is the ref in withc will be stycki  the element */}
             <EventActivity  activities={activities} contextRef={contextRef}/>
           </Grid.Column>

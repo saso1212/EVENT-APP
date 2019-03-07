@@ -186,7 +186,7 @@ export const goingToEvent = (event) => async (dispatch, getState) => {
   try {
     let eventDocRef = firestore.collection('events').doc(event.id);
     let eventAttendeeDocRef = firestore.collection('event_attendee').doc(`${event.id}_${user.uid}`);
-    //firt it must finish the transation then you can set the other doc or there is no
+    //first it must finish the transation then you can set the other doc or there is no
     // posebility to set the document 
     await firestore.runTransaction(async (transaction) => {
       //get the event document

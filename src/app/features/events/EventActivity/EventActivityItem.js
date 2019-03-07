@@ -10,10 +10,11 @@ class EventActivityItem extends Component {
         return (
           <div>
             New Event!{' '}
-            <Feed.User as={Link} to={{ pathname: '/profile/' + activity.hostUid }}>
+            {/* Link to={`/profile/${event.hostUid}`} */}
+            <Feed.User as={Link} to={`/profile/${activity.hostUid}`}>
               {activity.hostedBy}
             </Feed.User>{' '}
-            is hosting <Link to={{ pathname: '/event/' + activity.eventId }}>{activity.title}</Link>
+            is hosting <Link to={`/event/${activity.eventId}`}>{activity.title}</Link>
           </div>
         );
       case 'cancelledEvent':

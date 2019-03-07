@@ -7,8 +7,8 @@ const SingedInMeny = ({signOut,profile,auth}) => {
     return (
           <Menu.Item position="right" className='SingedInMeny'>
             <Image avatar spaced="right" src={profile.photoURL || '/assets/user.png'} />
-            <Dropdown pointing="top left" text={profile.displayName}>
-              <Dropdown.Menu>
+            <Dropdown pointing="top left" text={profile.displayName} style={{zIndex:'100'}}>
+              <Dropdown.Menu style={{zIndex:'100'}}>
                 <Dropdown.Item text="Create Event" icon="plus" />
                 <Dropdown.Item text="My Events" icon="calendar" />
                 <Dropdown.Item text="My Network" icon="users" />
