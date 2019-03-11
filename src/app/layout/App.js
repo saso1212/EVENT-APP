@@ -8,7 +8,8 @@ import EventDashboard from '../features/events/EventDashboard/EventDashboard';
 import EventForm from '../features/events/EventForm/EventForm';
 import SettingsDashboard from '../features/user/Settings/SettingsDashboard';
 import NavBar from '../features/Nav/Navbar/Navbar';
-import UserIsAuthenticated  from '../features/auth/authWrapper'
+import UserIsAuthenticated from '../features/auth/authWrapper'
+import NotFound from './NotFound'
 import {Container} from 'semantic-ui-react';
 import TestComponent from '../features/testarea/TestComponent';
 import ModalMenager from '../features/modals/ModalMenager';
@@ -42,6 +43,8 @@ class App extends Component {
           <Route path='/settings' component={UserIsAuthenticated(SettingsDashboard)}/>
           <Route path='/createEvent' component={UserIsAuthenticated(EventForm)}/>
           <Route path='/test' component={TestComponent}/>
+          <Route path='/error' component={NotFound}/>
+          <Route  component={NotFound}/>
         </Switch>
        </Container>
         </div>
