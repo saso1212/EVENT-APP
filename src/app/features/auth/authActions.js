@@ -63,7 +63,7 @@ export const registerUser = (user) =>
           provider:selectedProvider,
           type:'popup'
         })
-        console.log(user);
+       // console.log(user);
         if(user.additionalUserInfo.isNewUser){
           await firestore.set(`users/${user.user.uid}`,{
             displayName:user.profile.displayName,
@@ -84,7 +84,7 @@ export const registerUser = (user) =>
       const user=firebase.auth().currentUser;
 
       try{
-        console.log(user)
+       // console.log(user)
         await user.updatePassword(creds.newPassword1)
         //reset new redux-form method that reset all files in the  form 
         //account is the name of the form

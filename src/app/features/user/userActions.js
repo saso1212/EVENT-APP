@@ -263,7 +263,7 @@ export const cancelGoingToEvent = (event) =>
     const firestore = firebase.firestore();
     const today = new Date(Date.now());
     let eventsRef = firestore.collection('event_attendee');
-    console.log(eventsRef);
+    //console.log(eventsRef);
     let query;
     switch (activeTab) {
       case 1: // past events
@@ -295,7 +295,7 @@ export const cancelGoingToEvent = (event) =>
         let evt = await firestore.collection('events').doc(querySnap.docs[i].data().eventId).get();
         events.push({...evt.data(), id: evt.id})
       }
-      console.log('events',events)
+      //console.log('events',events)
       //push in the event reducer that we creted
       dispatch({type: FATCH_EVENTS, payload: {events}})    
       dispatch(asyncActionFinish());
@@ -335,7 +335,7 @@ export const cancelGoingToEvent = (event) =>
   async (dispatch, getState, {getFirestore}) => {
     const firestore = getFirestore();
     const user = firestore.auth().currentUser;  
-    console.log(userToUnFollow)
+    //console.log(userToUnFollow)
     try{
       await firestore.delete(
         {
