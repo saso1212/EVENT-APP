@@ -48,13 +48,7 @@ const AsyncNotFound = Loadable({
 })
 
 class App extends Component {
-  timeApp=()=>{
-    setInterval(()=>{
-      console.log('Time start');
-    },60000);
-  }
   render() {
-    this.timeApp();
     return (
      <div> 
        <AsyncModalManager/>
