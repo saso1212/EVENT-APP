@@ -113,5 +113,5 @@ export default compose(
   withFirestore,
   connect(mapStateToProps, mapDispatchToProps),
   //get the data from firebase but first check if the user is auth
-  firebaseConnect(props => props.auth.isEmpty && !props.auth.isEmpty && [`event_chat/${props.match.params.id}`])
+  firebaseConnect(props => props.auth.isLoaded && !props.auth.isEmpty && [`event_chat/${props.match.params.id}`])
 )(EventDetailedPage);

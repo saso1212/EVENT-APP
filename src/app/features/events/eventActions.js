@@ -146,7 +146,7 @@ export const deleteEvent=(eventId)=>{
   let today = new Date(Date.now());
   const firestore = firebase.firestore();
   const eventsRef = firestore.collection('events');
-  console.log(eventsRef);
+ // console.log(eventsRef);
   try {
     dispatch(asyncActionStart());
     //for paging this is that document that we want to start up
@@ -185,7 +185,7 @@ export const deleteEvent=(eventId)=>{
       let evt = { ...querySnap.docs[i].data(), id: querySnap.docs[i].id };
       events.push(evt);
     }
-    console.log(events);
+   // console.log(events);
     dispatch({ type: actionTypes.FATCH_EVENTS, payload: { events } });
     dispatch(asyncActionFinish());
     return querySnap;
