@@ -9,6 +9,7 @@
     "global": "^4.3.2",
     "google-map-react": "^1.1.1",
     "moment": "^2.22.0",
+    "process-nextick-args": "^2.0.0",
     "nvm": "0.0.4",
     "react": "^16.6.3",
     "react-cropper": "^1.0.1",
@@ -43,17 +44,14 @@
     "analyze": "source-map-explorer build/static/js/main.*",
     "deploy": "npm run build && firebase deploy"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.7",
+    "source-map-explorer": "^1.5.0"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "redux-devtools-extension": "^2.13.7",
-    "source-map-explorer": "^1.5.0"
-  }
+  ]
 }
